@@ -9,7 +9,7 @@ vim.opt.relativenumber = true          -- HOW: relative jump hints
 vim.opt.cursorline = true              -- HOW: highlight current line
 vim.opt.wrap = false                   -- HOW: no soft wrapping
 vim.opt.signcolumn = "yes"             -- HOW: keep signs from shifting text
-vim.opt.colorcolumn = "80"             -- HOW: soft ruler at 100 cols
+vim.opt.colorcolumn = "80"             -- HOW: soft ruler at 00 cols
 vim.opt.showmatch = true               -- HOW: briefly highlight matching pair
 vim.opt.matchtime = 2                  -- HOW: match highlight duration
 vim.opt.cmdheight = 1                  -- HOW: compact cmdline
@@ -22,10 +22,6 @@ vim.opt.lazyredraw = true              -- WHY: faster macros/scrolling
 vim.opt.synmaxcol = 300                -- WHY: speed up large lines
 vim.opt.virtualedit = "block"          -- WHY: Better visual editing for visual block mode
 
---Vim Native Status line opts
---vim.opt.laststatus = 3                 -- enable one global statusline across all windows
---vim.opt.statusline = "%F"             -- displays the full path to the current file.
---vim.opt.statusline = "%#UserStatusLineFilename# %F %#UserStatusLineMisc# %l:%c "
 vim.opt.showmode = false               -- HOW: statusline should show mode later
 
 -- movement & scrolling
@@ -34,7 +30,7 @@ vim.opt.sidescrolloff = 10             -- HOW: keep context left/right
 vim.opt.splitbelow = true              -- HOW: horizontal splits below
 vim.opt.splitright = true              -- HOW: vertical splits right
 -- movement / navigation
-vim.o.whichwrap = "b,s,<,>,[,]"  -- allow arrow/[] to wrap to prev/next line
+vim.o.whichwrap = "b,s,<,>,[,]"        -- allow arrow/[] to wrap to prev/next line
 
 -- indent & tabs (project-agnostic;  autocmds can override)
 vim.opt.tabstop = 4

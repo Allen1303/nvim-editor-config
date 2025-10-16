@@ -1,14 +1,18 @@
--- Keymaps : Leader + Functional Navigation & Editing--------------------------------
--- Helper function-------------------------------------------------------------------
-local function set_keymaps(mode, key, action, opts) 
-  if type(opts) == "string" then opts = {desc = opts} end -- checks if the value passed to the opts param is a Lua string data type.
-local defaults = { noremap = true, silent = true } -- noremap prevents recursive mappings; silent hides command echoes.
-opts = vim.tbl_extend("force", defaults, opts or {}) -- merge user options with defaults without mutating either.
-vim.keymap.set(mode, key, action, opts)
+-- ╭───────────--------------────────────-───────────────────╮
+-- │   Keymaps : Leader + Functional Navigation & Editing    │
+-- ╰───────────────────────--─-────────────────------------──╯
+-- Helper function--------------------------------------------
+local function set_keymaps(mode, key, action, opts)
+	if type(opts) == "string" then
+		opts = { desc = opts }
+	end -- checks if the value passed to the opts param is a Lua string data type.
+	local defaults = { noremap = true, silent = true } -- noremap prevents recursive mappings; silent hides command echoes.
+	opts = vim.tbl_extend("force", defaults, opts or {}) -- merge user options with defaults without mutating either.
+	vim.keymap.set(mode, key, action, opts)
 end
 -- set_keymaps("n", "<leader>zz", function() print("keymap worked") end, "Test keymap")
 -- Prevent accidental <space> in normal/visual mode from triggering anything
-set_keymaps({"n", "v"}, "<Space>", "<Nop>", "No-op for space in normal/visual modes")
+set_keymaps({ "n", "v" }, "<Space>", "<Nop>", "No-op for space in normal/visual modes")
 -- ╭──────────────────────────────╮
 -- │  Quality-of-life basics      │
 -- ╰──────────────────────────────╯
@@ -24,8 +28,8 @@ set_keymaps("n", "<leader>a", "ggVG", "Select all")
 -- │  Centered navigation for search/jumps     │
 -- ╰────────────────────────-──────────────────╯
 -- HOW : Append 'zzzv' to recenter & open folds around cursor.
-set_keymaps({"n","x","o"}, "n", "nzzzv", " Next match centered")
-set_keymaps({"n","x","o"}, "N", "Nzzzv", " Prev match centered")
+set_keymaps({ "n", "x", "o" }, "n", "nzzzv", " Next match centered")
+set_keymaps({ "n", "x", "o" }, "N", "Nzzzv", " Prev match centered")
 set_keymaps("n", "gg", "ggzz", "Goto top centered")
 
 -- Additional centered navigation (NEW)
@@ -58,13 +62,13 @@ set_keymaps("x", "<leader>p", [["_dP]], "Paste without yanking")
 -- WHY : Muscle memory that mirrors IDE behavior.
 -- HOW : Ctrl-h/j/k/l to move; leader+s* to split; leader+= to equalize.
 set_keymaps("n", "<C-h>", "<C-w>h", "Focus left window")
-set_keymaps("n", "<C-j>" , "<C-w>j", "Focus lower window")
-set_keymaps("n", "<C-k>" , "<C-w>k", "Focus upper window")
-set_keymaps("n", "<C-l>" , "<C-w>l", "Focus right window")
-set_keymaps("n", "<leader>sv" , "<cmd>vsplit<CR>", "Vertical split")
-set_keymaps("n", "<leader>sh" , "<cmd>split<CR>", "Horizontal split")
-set_keymaps("n", "<leader>se" , "<C-w>=", "Equalize splits")
-set_keymaps("n", "<leader>sx" , "<cmd>close<CR>", "Close split")
+set_keymaps("n", "<C-j>", "<C-w>j", "Focus lower window")
+set_keymaps("n", "<C-k>", "<C-w>k", "Focus upper window")
+set_keymaps("n", "<C-l>", "<C-w>l", "Focus right window")
+set_keymaps("n", "<leader>sv", "<cmd>vsplit<CR>", "Vertical split")
+set_keymaps("n", "<leader>sh", "<cmd>split<CR>", "Horizontal split")
+set_keymaps("n", "<leader>se", "<C-w>=", "Equalize splits")
+set_keymaps("n", "<leader>sx", "<cmd>close<CR>", "Close split")
 
 -- Window resizing (NEW)
 set_keymaps("n", "<C-Up>", "<cmd>resize +2<CR>", "Increase window height")
@@ -89,8 +93,12 @@ set_keymaps("n", "<leader>bp", "<cmd>bprevious<CR>", "Previous buffer")
 set_keymaps("n", "<leader>nh", "<cmd>nohlsearch<CR>", "Clear search highlights")
 
 -- Search and replace word under cursor
-set_keymaps("n", "<leader>s", [[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]], 
-"Search and replace word under cursor")
+set_keymaps(
+	"n",
+	"<leader>s",
+	[[:%s/\<<C-r><C-w>\>/<C-r><C-w>/gI<Left><Left><Left>]],
+	"Search and replace word under cursor"
+)
 
 -- Search and replace in visual selection
 set_keymaps("v", "<leader>s", [[:s/\%V]], "Search and replace in selection")
@@ -117,6 +125,6 @@ set_keymaps("n", "]l", "<cmd>lnext<CR>", "Next location item")
 -- ╰──────────────────────────────╯
 -- WHY : Natural movement in long lines; preserve visual focus.
 -- HOW : expr maps for j/k; use marks around J.
-set_keymaps("n", "j", [[v:count == 0 ? 'gj' : 'j']], {expr = true, desc = "Move Down (respect wraps)" })
-set_keymaps("n", "k", [[v:count == 0 ? 'gk' : 'k']], {expr = true, desc = "Move Up (respect wraps)" }) 
+set_keymaps("n", "j", [[v:count == 0 ? 'gj' : 'j']], { expr = true, desc = "Move Down (respect wraps)" })
+set_keymaps("n", "k", [[v:count == 0 ? 'gk' : 'k']], { expr = true, desc = "Move Up (respect wraps)" })
 set_keymaps("n", "J", "mzJ`z", "Join lines (keep cursor position)")
