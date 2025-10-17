@@ -54,7 +54,7 @@ vim.opt.fillchars:append({
 	vertleft = "┫", -- ┫ junction on left
 	vertright = "┣", -- ┣ junction on right
 	verthoriz = "╋", -- ╋ T-crossing
-	horiz = "━", -- horizontal split
+	horiz = "━", -- "-"horizontal split
 	horizup = "┻", -- ┻ junction up
 	horizdown = "┳", -- ┳ junction down
 })
