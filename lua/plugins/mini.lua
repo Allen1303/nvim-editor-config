@@ -2,6 +2,9 @@ return {
 	-- ╭──────────────────────────────────────────────────────────╮
 	-- │ Mini.Icons — adds UI icons for plugins and files         │
 	-- ╰──────────────────────────────────────────────────────────╯
+
+	-- Real devicons (ensure it’s available early)
+	{ "nvim-tree/nvim-web-devicons", lazy = false, opts = { default = true } },
 	{
 		"nvim-mini/mini.nvim",
 		main = "mini.icons",
@@ -10,9 +13,8 @@ return {
 		opts = {}, -- defaults
 		-- config only to perform the extra side-effect (mock devicons)
 		config = function(_, opts)
-			local icons = require("mini.icons")
-			icons.setup(opts) -- still honor opts
-			icons.mock_nvim_web_devicons() -- side-effect beyond setup
+			require("mini.icons").setup(opts)
+			-- icons.mock_nvim_web_devicons() -- side-effect beyond setup
 		end,
 	},
 	-- ╭──────────────────────────────────────────────────────────╮
@@ -34,15 +36,19 @@ return {
 		},
 		opts = {
 			options = { use_as_default_explorer = true, permanent_delete = true },
-			windows = { preview = true, width_focus = 50, width_nofocus = 25, width_preview = 60 },
+			windows = { preview = true, width_focus = 50, width_nofocus = 35, width_preview = 75 },
 		},
 		config = function(_, opts)
 			local mf = require("mini.files")
 			mf.setup(opts)
 
-			-- Transparent highlight groups (one-time)
-			vim.api.nvim_set_hl(0, "MiniFilesNormal", { bg = "none" })
-			vim.api.nvim_set_hl(0, "MiniFilesBorder", { bg = "none" })
+			-- Get theme's Normal fg so icons/text remain visible on transparent bg
+			local ok, normal = pcall(vim.api.nvim_get_hl, 0, { name = "Normal", link = false })
+			local norm_fg = (ok and normal and normal.fg) or 0xffffff
+
+			-- Transparent + visible foreground for Mini.Files windows
+			vim.api.nvim_set_hl(0, "MiniFilesNormal", { bg = "NONE", fg = norm_fg })
+			vim.api.nvim_set_hl(0, "MiniFilesBorder", { bg = "NONE", fg = norm_fg })
 
 			local grp = vim.api.nvim_create_augroup("mini_files_transparent_min", { clear = true })
 
@@ -50,36 +56,26 @@ return {
 				if not win or not vim.api.nvim_win_is_valid(win) then
 					return
 				end
-
-				-- Map BOTH Normal and NormalFloat, plus a few noisy groups, to a transparent bg
+				-- Keep it minimal: map only the core groups we need
 				vim.api.nvim_set_option_value(
 					"winhighlight",
 					table.concat({
 						"Normal:MiniFilesNormal",
-						"NormalNC:MiniFilesNormal",
-						"NormalFloat:MiniFilesNormal",
 						"FloatBorder:MiniFilesBorder",
-						"SignColumn:MiniFilesNormal",
-						"EndOfBuffer:MiniFilesNormal",
-						"CursorLine:MiniFilesNormal",
-						"CursorColumn:MiniFilesNormal",
 					}, ","),
 					{ win = win }
 				)
-
-				-- Kill EOB tildes; avoid blend “darkening”
 				vim.api.nvim_set_option_value("fillchars", "eob: ", { win = win })
-				vim.api.nvim_set_option_value("winblend", 0, { win = win })
+				vim.api.nvim_set_option_value("winblend", 0, { win = win }) -- true transparency (no fade)
 			end
 
-			-- Cover both initial open and later layout updates
 			vim.api.nvim_create_autocmd("User", {
 				group = grp,
 				pattern = { "MiniFilesWindowOpen", "MiniFilesWindowUpdate" },
 				callback = function(ev)
 					apply_transparent_winhl(ev.data.win_id)
 				end,
-				desc = "Keep Mini.Files windows transparent",
+				desc = "Keep Mini.Files windows transparent with visible foreground",
 			})
 		end,
 	},
